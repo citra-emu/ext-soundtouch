@@ -8,10 +8,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Last changed  : $Date: 2015-05-18 18:25:07 +0300 (Mon, 18 May 2015) $
+// Last changed  : $Date: 2017-07-30 12:28:06 +0300 (su, 30 heinä 2017) $
 // File revision : $Revision: 3 $
 //
-// $Id: STTypes.h 215 2015-05-18 15:25:07Z oparviai $
+// $Id: STTypes.h 252 2017-07-30 09:28:06Z oparviai $
 //
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -53,6 +53,8 @@ typedef unsigned long   ulong;
 // Helper macro for aligning pointer up to next 16-byte boundary
 #define SOUNDTOUCH_ALIGN_POINTER_16(x)      ( ( (ulongptr)(x) + 15 ) & ~(ulongptr)15 )
 
+#include "soundtouch_config.h"
+
 namespace soundtouch
 {
     /// Activate these undef's to overrule the possible sampletype 
@@ -90,8 +92,8 @@ namespace soundtouch
         ///   However, if you still prefer to select the sample format here 
         ///   also in GNU environment, then please #undef the INTEGER_SAMPLE
         ///   and FLOAT_SAMPLE defines first as in comments above.
-        #define SOUNDTOUCH_INTEGER_SAMPLES     1    //< 16bit integer samples
-        //#define SOUNDTOUCH_FLOAT_SAMPLES       1    //< 32bit float samples
+        //#define SOUNDTOUCH_INTEGER_SAMPLES     1    //< 16bit integer samples
+        #define SOUNDTOUCH_FLOAT_SAMPLES       1    //< 32bit float samples
      
     #endif
 
@@ -102,7 +104,7 @@ namespace soundtouch
         /// routines compiled for whatever reason, you may disable these optimizations 
         /// to make the library compile.
 
-        //#define SOUNDTOUCH_ALLOW_X86_OPTIMIZATIONS     1
+        #define SOUNDTOUCH_ALLOW_X86_OPTIMIZATIONS     1
 
         /// In GNU environment, allow the user to override this setting by
         /// giving the following switch to the configure script:
@@ -135,8 +137,10 @@ namespace soundtouch
         #endif // SOUNDTOUCH_FLOAT_SAMPLES
 
         #ifdef SOUNDTOUCH_ALLOW_X86_OPTIMIZATIONS
-            // Allow MMX optimizations
-            #define SOUNDTOUCH_ALLOW_MMX   1
+            // Allow MMX optimizations (not available in X64 mode)
+            #if (!_M_X64)
+                #define SOUNDTOUCH_ALLOW_MMX   1
+            #endif
         #endif
 
     #else
